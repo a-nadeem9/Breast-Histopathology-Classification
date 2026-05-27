@@ -1,46 +1,68 @@
 # Breast Histopathology Classification
 
-![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)  ![Fast.ai](https://img.shields.io/badge/fast.ai-v2.4-orange)  ![PyTorch](https://img.shields.io/badge/pytorch-v1.13-red)
+![Python](https://img.shields.io/badge/Python-3.8%2B-blue)
+![FastAI](https://img.shields.io/badge/FastAI-v2-orange)
+![PyTorch](https://img.shields.io/badge/PyTorch-1.x-red)
+![Notebook](https://img.shields.io/badge/Jupyter-Notebook-lightgrey)
 
-## Project Overview
+This repository contains a notebook-based deep learning analysis for classifying breast histopathology images as benign or malignant. The project compares a shallow neural network, a custom convolutional neural network, and VGG16 transfer learning under different preprocessing and training setups.
 
-This repository presents a thorough comparative study on classifying breast cancer histopathology images. We benchmark three model families under varied data treatments:
+The analysis uses breast cancer histopathology images organized by class label and magnification level, including 100x images. The notebook workflow is written for Google Colab and FastAI/PyTorch.
 
-- **SimpleNet**: A shallow fully connected network  
-- **CustomCNN**: A tailored convolutional neural network with four blocks of Conv→BN→ReLU→Pool  
-- **VGG16 Transfer Learning**: Fine-tuning a pretrained VGG16 on histopathology data
+## Project Scope
 
-Each architecture is evaluated across data scenarios:
+The notebook explores:
 
-- **Baseline**: No augmentation, standard resizing  
-- **Augmentation**: Random flips, rotations, lighting and contrast adjustments  
-- **Augmentation + Oversampling**: Balancing classes by duplicating minority samples  
-- **Native vs. 100× Magnification**: Testing on both resolutions to gauge the impact of image detail
+- benign vs. malignant image classification
+- baseline training without augmentation
+- image augmentation with FastAI transforms
+- oversampling to reduce class imbalance
+- comparison of shallow, custom CNN, and transfer learning models
+- ROC curves, confusion matrices, precision, recall, specificity, and accuracy
+- effect of 100x magnification images on model performance
 
-## Key Features
+## Models Compared
 
-- **Modular Data Pipeline**: Fast.ai DataBlock API for easy experimentation  
-- **Architectural Diversity**: From MLP to deep CNN and transfer learning  
-- **Balanced Training**: Oversampling combined with augmentation for robust models  
-- **Comprehensive Metrics**: Accuracy, precision, recall, specificity, and ROC threshold analysis
+| Model | Description |
+| --- | --- |
+| `SimpleNet` | Shallow fully connected neural network used as a baseline |
+| `CustomCNN` | Four-block convolutional neural network with batch normalization and pooling |
+| `VGG16` | Pretrained VGG16 model fine-tuned for binary histopathology classification |
 
-## Results and Analysis
+## Workflow
 
-1. **Overall Best Performer**: The VGG16 fine-tuned on augmented + oversampled 100× images achieved an **accuracy of 94.2%**, outperforming both the custom CNN (89.7%) and SimpleNet (81.3%). The high-resolution data provided richer texture cues, enabling the pretrained features to generalize effectively.
+1. Load histopathology images from Google Drive.
+2. Build FastAI `DataBlock` pipelines for benign/malignant labels.
+3. Train baseline models.
+4. Apply augmentation and class balancing.
+5. Re-train models under the updated data setup.
+6. Evaluate models using confusion matrices, ROC curves, and threshold-based metrics.
+7. Repeat selected experiments on 100x magnification images.
 
-2. **Impact of Augmentation**:  
-   - For the CustomCNN, augmentation alone boosted accuracy from **81.4%** to **86.9%**, reduced false negatives by 22%, and improved recall from 78% to 84%.  
-   - SimpleNet showed only a modest gain (3% absolute), highlighting its limited capacity to leverage synthetic diversity.
+## Repository Contents
 
-3. **Benefit of Oversampling**:  
-   - Class balance corrections further lifted precision by **4–6%** across all models, with the most pronounced effect on recall for the shallow network (+8%).  
-   - Confusion matrices indicate a significant drop in missed malignant samples when oversampling is applied (see notebook Confusion Matrix section).
+```text
+.
+|-- README.md
+`-- breast_histopathology_classification.ipynb
+```
 
-4. **Resolution Effects**:  
-   - Moving to 100× magnification images improved detection of micro-architecture patterns: the CustomCNN’s AUC increased from **0.91** (native) to **0.95** (100×).  
-   - However, training time doubled, suggesting a trade-off between accuracy and compute costs.
+## Dataset
 
-5. **Threshold Optimization**:  
-   - ROC threshold analysis revealed that setting the decision threshold at **0.42** (instead of 0.5) for VGG16 yields an optimal balance: **96% sensitivity** with **92% specificity**, suitable for clinical-minded deployments.
+The notebook uses a local Google Drive dataset path and does not include image data in this repository. The folder structure is expected to separate images by class label, for example:
 
+```text
+Breast_Cancer_Dataset/
+|-- benign/
+`-- malignant/
+```
 
+The class counts and magnification setup are consistent with the BreaKHis breast histopathology dataset, which contains benign and malignant breast tumor images across multiple magnification levels, including 40x, 100x, 200x, and 400x.
+
+BreaKHis dataset reference: https://web.inf.ufpr.br/vri/databases/breast-cancer-histopathological-database-breakhis/
+
+## Notes
+
+- The notebook was developed in Google Colab and uses Google Drive paths.
+- Dataset files are not committed to this repository.
+- Results may vary because random train/validation splits and augmentation are used.
