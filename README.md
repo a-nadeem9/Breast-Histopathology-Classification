@@ -1,6 +1,6 @@
 # Breast Histopathology Classification
 
-A notebook-based comparison of simple deep learning models for benign vs. malignant breast histopathology image classification.
+A comparison of simple deep learning models for benign vs. malignant breast histopathology image classification.
 
 The analysis uses FastAI/PyTorch to compare:
 
